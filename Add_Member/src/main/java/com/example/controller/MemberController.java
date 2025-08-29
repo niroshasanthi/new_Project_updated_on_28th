@@ -11,21 +11,50 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/members")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@CrossOrigin(
+  origins = {
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:3002",
+    "http://localhost:3003",
+    "http://localhost:3004",
+    "http://localhost:3005",
+    "http://localhost:3006",
+    "http://localhost:3007",
+    "http://localhost:3008",
+    "http://localhost:3009"
+  },
+  allowCredentials = "true"
+)
 public class MemberController {
 
     @Autowired
     private MemberService memberService;
 
-    // Add child
+    // Add child with validation and error handling
     @PostMapping("/add")
     public ResponseEntity<?> addChild(@RequestBody Map<String, String> payload) {
-        Long parentId = Long.parseLong(payload.get("parentId"));
+        String parentIdStr = payload.get("parentId");
+        if (parentIdStr == null || parentIdStr.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "parentId is required"));
+        }
+
+        Long parentId;
+        try {
+            parentId = Long.parseLong(parentIdStr);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Invalid parentId format"));
+        }
+
         String username = payload.get("username");
         String password = payload.get("password");
 
-        ChildMember child = memberService.addChildMember(parentId, username, password);
-        return ResponseEntity.ok(child);
+        try {
+            ChildMember child = memberService.addChildMember(parentId, username, password);
+            return ResponseEntity.ok(child);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", "Failed to add child: " + e.getMessage()));
+        }
     }
 
     // Get all children for a parent

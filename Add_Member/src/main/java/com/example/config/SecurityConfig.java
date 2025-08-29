@@ -59,7 +59,17 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:3000"); // Your React app's URL
+        config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedOrigin("http://localhost:3001");
+        config.addAllowedOrigin("http://localhost:3002");
+        config.addAllowedOrigin("http://localhost:3003");
+        config.addAllowedOrigin("http://localhost:3004");
+        config.addAllowedOrigin("http://localhost:3005");
+        config.addAllowedOrigin("http://localhost:3006");
+        config.addAllowedOrigin("http://localhost:3007");
+        config.addAllowedOrigin("http://localhost:3008");
+        config.addAllowedOrigin("http://localhost:3009");
+
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);

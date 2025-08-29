@@ -56,7 +56,19 @@ public class SecurityConfig {
     public CorsFilter corsFilter() {
         var config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://localhost:3000"));  // React app URL
+        config.setAllowedOrigins(List.of(
+        	    "http://localhost:3000",
+        	    "http://localhost:3001",
+        	    "http://localhost:3002",
+        	    "http://localhost:3003",
+        	    "http://localhost:3004",
+        	    "http://localhost:3005",
+        	    "http://localhost:3006",
+        	    "http://localhost:3007",
+        	    "http://localhost:3008",
+        	    "http://localhost:3009"
+        	));
+ // React app URL
         config.addAllowedHeader("*");  // Allow all headers
         config.addAllowedMethod("*");  // Allow all methods
 
