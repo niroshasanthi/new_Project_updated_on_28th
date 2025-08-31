@@ -44,6 +44,11 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-webflux</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-circuitbreaker-reactor-resilience4j</artifactId>
+    </dependency>
 
     <!-- Spring Cloud Gateway -->
     <dependency>
@@ -57,12 +62,20 @@
       <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
       <version>4.3.0</version>
     </dependency>
-
-    <!-- OpenAPI / Swagger support -->
+    
+    <!-- ✅ Keep only required OpenAPI dependency -->
     <dependency>
       <groupId>org.springdoc</groupId>
-      <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
+      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
       <version>2.1.0</version>
+    </dependency>
+
+    <!-- ✅ Add Jakarta Servlet API -->
+    <dependency>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <version>6.0.0</version>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Lombok for code reduction (optional) -->
@@ -72,10 +85,11 @@
       <optional>true</optional>
     </dependency>
 
-<dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
-</dependency>
+    <!-- Extra resilience4j (if needed for sync) -->
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+    </dependency>
 
     <!-- Devtools for hot reload during dev -->
     <dependency>

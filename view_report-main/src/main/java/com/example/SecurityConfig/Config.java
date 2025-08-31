@@ -1,13 +1,20 @@
 package com.example.SecurityConfig;
 
+import com.example.security.JwtAuthFilter;
+import com.example.security.SecurityUserDetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -15,22 +22,14 @@ import org.springframework.web.filter.CorsFilter;
 import java.util.List;
 
 @Configuration
-@EnableWebSecurity
+@EnableMethodSecurity
 public class Config {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Properly configure CORS
-            .authorizeRequests(auth -> auth
-                .requestMatchers("/api/login", "/api/children/**", "/api/restriction/**").permitAll() // Allow these routes for all
-                .anyRequest().authenticated() // Secure the rest
-            )
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .httpBasic(httpBasic -> {});
-        return http.build();
-    }
+    @Autowired
+    private JwtAuthFilter jwtAuthFilter;
+
+    @Autowired
+    private SecurityUserDetailsService userDetailsService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -38,46 +37,46 @@ public class Config {
     }
 
     @Bean
-    public CorsFilter corsFilter() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of(
-        	    "http://localhost:3000",
-        	    "http://localhost:3001",
-        	    "http://localhost:3002",
-        	    "http://localhost:3003",
-        	    "http://localhost:3004",
-        	    "http://localhost:3005",
-        	    "http://localhost:3006",
-        	    "http://localhost:3007",
-        	    "http://localhost:3008",
-        	    "http://localhost:3009"
-        	));
-
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config); // Apply CORS globally to all paths
-        return new CorsFilter(source);
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
 
-    // Correctly define CorsConfigurationSource
-    public UrlBasedCorsConfigurationSource corsConfigurationSource() {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(csrf -> csrf.disable())
+            .cors()
+            .and()
+         // FIXED VERSION
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/members").permitAll()        // ✅ Allow members endpoint
+                .requestMatchers("/api/reports/**").permitAll()     // ✅ Allow reports endpoints  
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .anyRequest().authenticated()
+
+            )
+            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-
-        // CORS settings for specific request patterns
         CorsConfiguration config = new CorsConfiguration();
+
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://localhost:3000"));
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
+        config.setAllowedOrigins(List.of(
+                "http://localhost:3000","http://localhost:3001","http://localhost:3002",
+                "http://localhost:3003","http://localhost:3004","http://localhost:3005",
+                "http://localhost:3006","http://localhost:3007","http://localhost:3008",
+                "http://localhost:3009"));
 
-        // Apply CORS configuration to specific URL patterns
-        source.registerCorsConfiguration("/api/login", config); // Apply CORS to /api/login
-        source.registerCorsConfiguration("/api/children/**", config); // Apply CORS to /api/children/**
-        source.registerCorsConfiguration("/api/restriction/**", config); // Apply CORS to /api/restriction/**
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 
-        return source;
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
 }

@@ -11,5 +11,5 @@ import java.util.Optional;
 @Repository
 public interface ChildMemberRepository extends JpaRepository<ChildMember, Long> {
     List<ChildMember> findByParent(Parent parent);
-    Optional<ChildMember> findByUsername(String username); // for login
+    Optional<ChildMember> findByUsername(String username);
 }

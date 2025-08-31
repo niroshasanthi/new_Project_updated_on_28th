@@ -3,53 +3,42 @@ package com.example.demo.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "childrens")
+@Table(name = "child_members")
 public class Child {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    @Column(nullable = false, unique = true)
+    private String username;  // username to login with
 
     @Column(nullable = false)
-    private String password;
+    private String password;  // stored as bcrypt hash
 
-    // Store parentId instead of Parent object
-    @Column(name = "parent_id", nullable = false)
-    private Long parentId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id", nullable = false)
+    private Parent parent;
 
-    // Getters and setters
-    public Long getId() {
-        return id;
-    }
+    public Child() {}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
+    public Child(Parent parent, String username, String password) {
+        this.parent = parent;
+        this.username = username;
         this.password = password;
     }
 
-    public Long getParentId() {
-        return parentId;
-    }
+    // Getters / Setters
 
-    public void setParentId(Long parentId) {
-        this.parentId = parentId;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+
+    public Parent getParent() { return parent; }
+    public void setParent(Parent parent) { this.parent = parent; }
 }

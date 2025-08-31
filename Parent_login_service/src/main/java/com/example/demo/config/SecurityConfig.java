@@ -28,39 +28,36 @@ public class SecurityConfig {
     @Autowired
     private JwtAuthFilter jwtAuthFilter;
 
-    // Password encoder bean using BCrypt
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Expose AuthenticationManager for authentication processes
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
-    // Main security filter chain configuration
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())  // Disable CSRF protection (suitable for stateless APIs)
-            .cors()                        // Enable CORS support
+            .csrf(csrf -> csrf.disable())
+            .cors()
             .and()
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()   // Allow all OPTIONS requests
-                .requestMatchers("/api/parents/login", "/api/parents/signup").permitAll() // Public access to login and signup
-                .anyRequest().authenticated()  // All other endpoints require authentication
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers("/api/parents/login", "/api/parents/signup").permitAll()
+                .requestMatchers("/api/parents/login").permitAll()    // Allow login without auth
+                .requestMatchers("/api/parents/profile").permitAll()
+                .anyRequest().authenticated()
             )
-            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));  // Stateless session management
+            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        // Add JWT authentication filter before the username/password filter
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // Global CORS configuration to allow frontend origins and methods
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {

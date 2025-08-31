@@ -1,42 +1,16 @@
 package com.example.dto;
 
 public class AppDto {
-    private Long id;
     private String name;
     private String category;
+    private boolean restricted;
 
-    // 🔹 Default constructor
-    public AppDto() {}
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    // 🔹 All-args constructor
-    public AppDto(Long id, String name, String category) {
-        this.id = id;
-        this.name = name;
-        this.category = category;
-    }
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 
-    // 🔹 Getters & Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
+    public boolean isRestricted() { return restricted; }
+    public void setRestricted(boolean restricted) { this.restricted = restricted; }
 }

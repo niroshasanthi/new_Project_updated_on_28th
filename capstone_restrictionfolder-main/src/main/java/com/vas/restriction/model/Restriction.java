@@ -1,7 +1,7 @@
-
 package com.vas.restriction.model;
 
 import jakarta.persistence.*;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "restrictions")
@@ -11,74 +11,53 @@ public class Restriction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long memberId;
+    @ManyToOne
+    @JoinColumn(name = "parent_id", referencedColumnName = "id", nullable = false)
+    private Parent parent;
+
+    @ManyToOne
+    @JoinColumn(name = "child_id", referencedColumnName = "id", nullable = false)
+    private ChildMember childMember;
 
     @Column(nullable = false)
     private String appName;
-   
+
     private String dataLimit;   // e.g. "500MB/day"
     private String timeLimit;   // e.g. "2 hours/day"
-    private String customRule;  // optional text rule
 
-    // Constructors
+    private LocalTime bedTimeStart;
+    private LocalTime bedTimeEnd;
+
+    private String customRule;
+
     public Restriction() {}
 
-    public Restriction(Long id, Long memberId, String appName, String dataLimit, String timeLimit, String customRule) {
-        this.id = id;
-        this.memberId = memberId;
-        this.appName = appName;
-        this.dataLimit = dataLimit;
-        this.timeLimit = timeLimit;
-        this.customRule = customRule;
-    }
+    // Getters and setters
 
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Parent getParent() { return parent; }
+    public void setParent(Parent parent) { this.parent = parent; }
 
-    public Long getMemberId() {
-        return memberId;
-    }
+    public ChildMember getChildMember() { return childMember; }
+    public void setChildMember(ChildMember childMember) { this.childMember = childMember; }
 
-    public void setMemberId(Long memberId) {
-        this.memberId = memberId;
-    }
+    public String getAppName() { return appName; }
+    public void setAppName(String appName) { this.appName = appName; }
 
-    public String getAppName() {
-        return appName;
-    }
+    public String getDataLimit() { return dataLimit; }
+    public void setDataLimit(String dataLimit) { this.dataLimit = dataLimit; }
 
-    public void setAppName(String appName) {
-        this.appName = appName;
-    }
+    public String getTimeLimit() { return timeLimit; }
+    public void setTimeLimit(String timeLimit) { this.timeLimit = timeLimit; }
 
-    public String getDataLimit() {
-        return dataLimit;
-    }
+    public LocalTime getBedTimeStart() { return bedTimeStart; }
+    public void setBedTimeStart(LocalTime bedTimeStart) { this.bedTimeStart = bedTimeStart; }
 
-    public void setDataLimit(String dataLimit) {
-        this.dataLimit = dataLimit;
-    }
+    public LocalTime getBedTimeEnd() { return bedTimeEnd; }
+    public void setBedTimeEnd(LocalTime bedTimeEnd) { this.bedTimeEnd = bedTimeEnd; }
 
-    public String getTimeLimit() {
-        return timeLimit;
-    }
-
-    public void setTimeLimit(String timeLimit) {
-        this.timeLimit = timeLimit;
-    }
-
-    public String getCustomRule() {
-        return customRule;
-    }
-
-    public void setCustomRule(String customRule) {
-        this.customRule = customRule;
-    }
+    public String getCustomRule() { return customRule; }
+    public void setCustomRule(String customRule) { this.customRule = customRule; }
 }

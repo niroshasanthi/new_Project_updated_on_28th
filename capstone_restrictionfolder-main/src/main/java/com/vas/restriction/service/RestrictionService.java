@@ -1,4 +1,3 @@
-
 package com.vas.restriction.service;
 
 import com.vas.restriction.model.Restriction;
@@ -20,10 +19,11 @@ public class RestrictionService {
         return restrictionRepository.save(restriction);
     }
 
-    public List<Restriction> getRestrictionsForMember(Long memberId) {
-        return restrictionRepository.findByMemberId(memberId);
+    public List<Restriction> getRestrictionsForParent(Long parentId) {
+        return restrictionRepository.findByParentId(parentId);
+    }
+
+    public List<Restriction> getRestrictionsForChild(Long childId) {
+        return restrictionRepository.findByChildMemberId(childId);
     }
 }
-
-
-

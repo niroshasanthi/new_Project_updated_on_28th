@@ -1,8 +1,6 @@
 package com.example.demo.dto;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 public class ParentDto {
     @NotBlank
