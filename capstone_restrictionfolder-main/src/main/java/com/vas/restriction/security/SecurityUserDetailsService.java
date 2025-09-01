@@ -6,10 +6,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-/**
- * Minimal UserDetailsService that trusts email from JWT and returns UserDetails with role.
- * No DB access here because parent data is external.
- */
 @Service
 public class SecurityUserDetailsService implements UserDetailsService {
 
@@ -23,3 +19,5 @@ public class SecurityUserDetailsService implements UserDetailsService {
                 .build();
     }
 }
+
+

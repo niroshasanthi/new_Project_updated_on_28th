@@ -48,6 +48,7 @@ public class Config {
             .and()
          // FIXED VERSION
             .authorizeHttpRequests(auth -> auth
+            		.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/api/members").permitAll()        // ✅ Allow members endpoint
                 .requestMatchers("/api/reports/**").permitAll()     // ✅ Allow reports endpoints  
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()

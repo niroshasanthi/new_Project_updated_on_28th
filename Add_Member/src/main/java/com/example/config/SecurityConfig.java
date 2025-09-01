@@ -31,14 +31,15 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> {}) // ✅ enable CORS (uses CorsConfig)
                 .authorizeHttpRequests(auth -> auth
+                		.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         // allow login without token
                         .requestMatchers("/api/parents/login").permitAll()
                         .requestMatchers("/").permitAll()
-                        
+                        .requestMatchers("/api/members/**").authenticated()
                         // ✅ allow preflight requests
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         // everything else requires JWT
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

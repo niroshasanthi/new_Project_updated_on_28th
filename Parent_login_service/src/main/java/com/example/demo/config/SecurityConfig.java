@@ -45,10 +45,12 @@ public class SecurityConfig {
             .cors()
             .and()
             .authorizeHttpRequests(auth -> auth
+            		.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/parents/login", "/api/parents/signup").permitAll()
                 .requestMatchers("/api/parents/login").permitAll()    // Allow login without auth
                 .requestMatchers("/api/parents/profile").permitAll()
+                .requestMatchers("/api/members/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
